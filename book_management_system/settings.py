@@ -9,7 +9,14 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
+import environ
 
+# 加载.env文件
+env = environ.Env()
+environ.Env.read_env()  # 默认读取当前目录下的.env文件
+POSTGRES_USER = env('POSTGRES_USER')
+POSTGRES_PASSWORD = env('POSTGRES_PASSWORD')
+POSTGRES_DB = env('POSTGRES_DB')
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -74,11 +81,17 @@ WSGI_APPLICATION = 'book_management_system.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+
+
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': env.db_url(
+        default=f"postgres://{POSTGRES_USER}:{POSTGRES_PASSWORD}@localhost:5432/{POSTGRES_DB}",
+    ),
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    # }
 }
 
 
